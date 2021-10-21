@@ -1,19 +1,19 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[48]:
+# In[1]:
 
 
 import boto3 as boto
 
 
-# In[49]:
+# In[5]:
 
 
-s3 = boto.resource('s3', aws_access_key_id='redacting_for_security', aws_secret_access_key='redacting_for_security')
+s3 = boto.resource('s3', aws_access_key_id='security_redaction', aws_secret_access_key='security_redaction')
 
 
-# In[50]:
+# In[6]:
 
 
 try: 
@@ -22,43 +22,43 @@ except Exception as e:
     print (e)
 
 
-# In[51]:
+# In[7]:
 
 
 bucket = s3.Bucket('hw3-nosql') 
 
 
-# In[52]:
+# In[8]:
 
 
 bucket.Acl().put(ACL='public-read') 
 
 
-# In[53]:
+# In[9]:
 
 
 body = open('.\exp1.csv', 'rb') 
 
 
-# In[54]:
+# In[10]:
 
 
 o = s3.Object('hw3-nosql', 'test').put(Body=body)
 
 
-# In[55]:
+# In[11]:
 
 
 s3.Object('hw3-nosql', 'test').Acl().put(ACL='public-read')
 
 
-# In[56]:
+# In[14]:
 
 
-dyndb = boto.resource('dynamodb', region_name='us-west-2', aws_access_key_id='redacting_for_security', aws_secret_access_key='redacting_for_security' )
+dyndb = boto.resource('dynamodb', region_name='us-west-2', aws_access_key_id='security_redaction', aws_secret_access_key='security_redaction' )
 
 
-# In[57]:
+# In[15]:
 
 
 try: 
@@ -96,25 +96,25 @@ except Exception as e:
     table = dyndb.Table("DataTable")
 
 
-# In[58]:
+# In[16]:
 
 
 table.meta.client.get_waiter('table_exists').wait(TableName='DataTable')
 
 
-# In[59]:
+# In[17]:
 
 
 print(table.item_count)
 
 
-# In[60]:
+# In[18]:
 
 
 import csv 
 
 
-# In[61]:
+# In[19]:
 
 
 with open('.\experiments.csv', 'r') as csvfile: 
@@ -126,7 +126,7 @@ with open('.\experiments.csv', 'r') as csvfile:
         s3.Object('hw3-nosql', item[3]).put(Body=body ) 
         md = s3.Object('hw3-nosql', item[3]).Acl().put(ACL='public-read') 
          
-        url = " https://s3-us-west-2.amazonaws.com/datacont-name/"+item[3] 
+        url = " https://s3-us-west-2.amazonaws.com/hw3-nosql/"+item[3] 
         metadata_item = {'PartitionKey': item[0], 'RowKey': item[1],  
                  'description' : item[4], 'date' : item[2], 'url':url}  
         try: 
@@ -135,7 +135,7 @@ with open('.\experiments.csv', 'r') as csvfile:
             print("item may already be there or another failure")
 
 
-# In[62]:
+# In[20]:
 
 
 response = table.get_item( 
@@ -148,7 +148,7 @@ item = response['Item']
 print(item)
 
 
-# In[63]:
+# In[21]:
 
 
 response
